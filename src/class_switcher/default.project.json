@@ -1,0 +1,10 @@
+{
+  "name": "class_switcher",
+  "tree": {
+    "$path": "Packages",
+
+    "class_switcher": {
+      "$path": "src"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+	"name": "grandma handydowns",
+	"tree": {
+		"$className": "DataModel",
+
+		"ServerStorage": {
+			"$path": "src"
+		}
+	}
+}
