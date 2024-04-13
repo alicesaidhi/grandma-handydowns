@@ -12,11 +12,11 @@ local mount = vide.mount
 
 return function(plugin: Plugin)
 
-	local toolbar: PluginToolbar = plugin:CreateToolbar("Class Switcher")
+	local toolbar: PluginToolbar = plugin:CreateToolbar("grandma's handy downs")
 	local button1: PluginToolbarButton = toolbar:CreateButton(
 		"Class Switcher",
-		"Opens the UI to switch classes",
-		""
+		"Opens the Dock Widget that allows you to switch classes",
+		"rbxassetid://17115243150"
 	)
 
 	local dock_widget_plugin_info = DockWidgetPluginGuiInfo.new(
@@ -30,7 +30,13 @@ return function(plugin: Plugin)
 	)
 	local dock_widget: DockWidgetPluginGui = plugin:CreateDockWidgetPluginGui("ClassSwitcher", dock_widget_plugin_info)
 
-	local action: PluginAction = plugin:CreatePluginAction("QuickSwitch", "Class Switch", "Switch Class", "", true)
+	local action: PluginAction = plugin:CreatePluginAction(
+		"QuickSwitch",
+		"Quick Class Switch",
+		"Creates a widget within the Viewport that allows you to quickly switch classes.",
+		"rbxassetid://17115243150",
+		true
+	)
 	local screen_gui = Instance.new("ScreenGui")
 	screen_gui.Name = "ClassSwitch"
 	screen_gui.Parent = CoreGui
