@@ -1,0 +1,10 @@
+{
+  "name": "assetmanager",
+  "tree": {
+    "$path": "Packages",
+
+    "assetmanager": {
+      "$path": "src"
+    }
+  }
+}
