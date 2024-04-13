@@ -38,10 +38,6 @@ local function app()
 	cleanup(Selection.SelectionChanged:Connect(set_selected))
 	set_selected()
 	
-	cleanup(UserInputService.InputBegan:Connect(function(input)
-		print(input.KeyCode)
-	end))
-
 	local function swap_classes()
 		local recording = ChangeHistoryService:TryBeginRecording("swap_class", "Begin Swap Classes")
 		if not recording and RunService:IsRunning() == false then
