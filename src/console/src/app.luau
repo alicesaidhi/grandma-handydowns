@@ -1,10 +1,11 @@
-local CoreGui = game:GetService("CoreGui")
+local LogService = game:GetService("LogService")
 
 local shared_toolbar = require(script.Parent.Parent.shared_toolbar)
 local vide = require(script.Parent.Parent.vide)
-local app = require(script.Parent.components.app)
-local quick = require(script.Parent.components.quick)
-local radium = require(script.Parent.libraries.radium)
+local app = require(script.Parent.components.main)
+local ansi = require(script.Parent.libraries.ansi)
+local stream = require(script.Parent.libraries.stream)
+local state = require(script.Parent.state)
 
 local source = vide.source
 local effect = vide.effect
@@ -15,31 +16,37 @@ return function(plugin: Plugin)
 
 	vide.strict = false
 
-	local action: PluginAction = plugin:CreatePluginAction(
-		"QuickSwitch",
-		"Quick Class Switch",
-		"Creates a widget within the Viewport that allows you to quickly switch classes.",
-		"rbxassetid://17115243150",
-		true
-	)
-	local screen_gui = Instance.new("ScreenGui")
-	screen_gui.Name = "ClassSwitch"
-	screen_gui.Parent = CoreGui
+	local is_deferred = false
+	local function defer()
+		if is_deferred then return end
+		is_deferred = true
 
-	local destroy
-	action.Triggered:Connect(function()
-		if destroy then destroy() end
-		destroy = vide.mount(function()
-			local quick = quick(function()
-				destroy()
-				destroy = nil
-			end)
-			cleanup(quick)
-			return quick
-		end, screen_gui)
+		task.defer(function()
+			state.stream(stream.get_string())
+			is_deferred = false
+		end)
+	end
+
+	LogService.MessageOut:Connect(function(input, message)
+		local line = ansi.convert(input).."\n"
+		stream.push_string(line)
+		defer()
 	end)
 
-	radium.download()
+	pcall(function()
+		
+		for i, log in LogService:GetLogHistory() do
+			local line = ansi.convert(log.message).."\n"
+			stream.push_string(line)
+		end
+
+		defer()
+		
+	end)
+
+	stream.push_string("[grandma/console] started plugin\n")
+
+	
 	local dock_widget_plugin_info = DockWidgetPluginGuiInfo.new(
 		Enum.InitialDockState.Float,
 		false,
@@ -53,13 +60,6 @@ return function(plugin: Plugin)
 
 	local activated = source(dock_widget.Enabled)
 
-	dock_widget.Name = "ClassSwitcher"
-	dock_widget.Title = "Class Switcher"
-
-	dock_widget:GetPropertyChangedSignal("Enabled"):Connect(function()
-		activated(dock_widget.Enabled)
-	end)
-
 	dock_widget:GetPropertyChangedSignal("Enabled"):Connect(function()
 		activated(dock_widget.Enabled)
 	end)
@@ -68,9 +68,9 @@ return function(plugin: Plugin)
 		CombinerName = "alice_plugins_1160098333",
 		ToolbarName = "grandma's handy downs",
 		
-		ButtonName = "Class Switcher",
-		ButtonIcon = "rbxassetid://17248497810",
-		ButtonTooltip = "Opens the Dock Widget that allows you to switch classes",
+		ButtonName = "Output",
+		ButtonIcon = "rbxassetid://17247723678",
+		ButtonTooltip = "Opens an output widget that supports ANSI color codes",
 		ClickedFn = function()
 			activated(not activated())
 		end
@@ -78,7 +78,12 @@ return function(plugin: Plugin)
 
 	shared_toolbar(plugin, shared_toolbar_settings)
 
+	dock_widget.Name = "Output"
+	dock_widget.Title = "Output"
+
 	local unmount
+
+	vide.strict = false
 
 	effect(function()
 		shared_toolbar_settings.Button:SetActive(activated())
@@ -97,6 +102,5 @@ return function(plugin: Plugin)
 			end, dock_widget)
 		end
 	end)
-
 
 end

@@ -1,5 +1,5 @@
 [package]
-name = "aloroid/class-switcher"
+name = "alicesaidhi/console"
 version = "0.1.0"
 private = true
 registry = "https://github.com/UpliftGames/wally-index"

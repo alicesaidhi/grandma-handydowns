@@ -1,0 +1,10 @@
+{
+  "name": "console",
+  "tree": {
+    "$path": "Packages",
+
+    "console": {
+      "$path": "src"
+    }
+  }
+}
